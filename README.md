@@ -1,6 +1,5 @@
-Absolutely. Since you are using an **ESP-12E (ESP8266)**, here is the corrected, clean README. You can copy-paste this directly into `README.md`.
+![Uploading Agrosense.png…]
 
-````markdown
 # 🌱 Soil Monitor
 
 An IoT-based soil monitoring system that collects and displays real-time agricultural sensor data through a web dashboard.
