@@ -1,4 +1,5 @@
-![Uploading Agrosense.png…]
+<img width="1672" height="941" alt="Agrosense" src="https://github.com/user-attachments/assets/a0612394-dd43-48b1-be60-666f9d54b62b" />
+
 
 # 🌱 Soil Monitor
 
