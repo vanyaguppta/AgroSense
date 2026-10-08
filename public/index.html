@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Soil Monitor | Smart Agriculture Dashboard</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Chart.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- ================= HEADER ================= -->
+
+  <header class="topbar">
+
+    <div class="brand">
+      <div class="brand-icon">
+        <i class="fa-solid fa-seedling"></i>
+      </div>
+
+      <div>
+        <h1>Soil Monitor</h1>
+        <p>Smart Agriculture Dashboard</p>
+      </div>
+    </div>
+
+    <div class="header-controls">
+
+      <div class="sensor-selector">
+        <label for="device">
+          <i class="fa-solid fa-microchip"></i>
+          Sensor
+        </label>
+
+        <select id="device">
+          <option value="">Loading sensors...</option>
+        </select>
+      </div>
+
+      <div id="status" class="status off">
+        <span class="status-dot"></span>
+        Offline
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- ================= MAIN ================= -->
+
+  <main class="dashboard">
+
+    <!-- Dashboard heading -->
+
+    <section class="dashboard-heading">
+
+      <div>
+        <span class="eyebrow">
+          <i class="fa-solid fa-satellite-dish"></i>
+          LIVE MONITORING
+        </span>
+
+        <h2>Field Health Overview</h2>
+
+        <p>
+          Monitor your soil conditions and make smarter irrigation decisions.
+        </p>
+      </div>
+
+      <div class="live-time">
+        <i class="fa-regular fa-clock"></i>
+        <span id="currentTime">--:--:--</span>
+      </div>
+
+    </section>
+
+
+    <!-- ================= ALERT ================= -->
+
+    <section id="alertBanner" class="alert-banner hidden">
+
+      <div class="alert-icon">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+
+      <div>
+        <strong id="alertTitle">Attention Required</strong>
+        <p id="alertText">Check your soil conditions.</p>
+      </div>
+
+    </section>
+
+
+    <!-- ================= TOP CARDS ================= -->
+
+    <section class="metrics-grid" id="metrics">
+
+      <!-- Moisture -->
+
+      <div class="metric-card moisture">
+
+        <div class="metric-top">
+          <div class="metric-icon">
+            <i class="fa-solid fa-droplet"></i>
+          </div>
+
+          <span class="metric-status good" id="moistureStatus">
+            Normal
+          </span>
+        </div>
+
+        <div class="metric-info">
+          <span>Soil Moisture</span>
+
+          <strong>
+            <span id="moistureMetric">--</span>
+            <small>%</small>
+          </strong>
+        </div>
+
+        <div class="progress">
+          <div id="moistureProgress" class="progress-fill"></div>
+        </div>
+
+      </div>
+
+
+      <!-- Temperature -->
+
+      <div class="metric-card temperature">
+
+        <div class="metric-top">
+
+          <div class="metric-icon">
+            <i class="fa-solid fa-temperature-half"></i>
+          </div>
+
+          <span class="metric-status good" id="temperatureStatus">
+            Normal
+          </span>
+
+        </div>
+
+        <div class="metric-info">
+          <span>Temperature</span>
+
+          <strong>
+            <span id="temperatureMetric">--</span>
+            <small>°C</small>
+          </strong>
+        </div>
+
+        <p class="metric-description">
+          Ambient soil temperature
+        </p>
+
+      </div>
+
+
+      <!-- pH -->
+
+      <div class="metric-card ph">
+
+        <div class="metric-top">
+
+          <div class="metric-icon">
+            <i class="fa-solid fa-flask"></i>
+          </div>
+
+          <span class="metric-status good" id="phStatus">
+            Healthy
+          </span>
+
+        </div>
+
+        <div class="metric-info">
+          <span>Soil pH</span>
+
+          <strong id="phMetric">--</strong>
+        </div>
+
+        <div class="ph-scale">
+          <span>Acidic</span>
+          <span>Neutral</span>
+          <span>Alkaline</span>
+        </div>
+
+      </div>
+
+
+      <!-- EC -->
+
+      <div class="metric-card ec">
+
+        <div class="metric-top">
+
+          <div class="metric-icon">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+
+          <span class="metric-status good" id="ecStatus">
+            Normal
+          </span>
+
+        </div>
+
+        <div class="metric-info">
+          <span>Electrical Conductivity</span>
+
+          <strong>
+            <span id="ecMetric">--</span>
+            <small>mS/cm</small>
+          </strong>
+        </div>
+
+        <p class="metric-description">
+          Indicates dissolved nutrients
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================= HERO SECTION ================= -->
+
+    <section class="hero-grid">
+
+      <!-- Moisture Gauge -->
+
+      <div class="panel gauge-panel">
+
+        <div class="panel-header">
+          <div>
+            <span class="panel-label">CURRENT CONDITION</span>
+            <h3>Soil Moisture</h3>
+          </div>
+
+          <i class="fa-solid fa-droplet panel-symbol"></i>
+        </div>
+
+        <div class="gauge" id="gauge">
+
+          <div class="gauge-background"></div>
+
+          <div class="fill" id="fill"></div>
+
+          <div class="gauge-center">
+
+            <strong id="moistureVal">--</strong>
+
+            <span>%</span>
+
+            <small>Moisture</small>
+
+          </div>
+
+        </div>
+
+        <div class="advice">
+
+          <div class="advice-icon">
+            <i class="fa-solid fa-lightbulb"></i>
+          </div>
+
+          <div>
+            <h3 id="adviceTitle">Waiting for data</h3>
+
+            <p id="adviceText">
+              Start a sensor or run the simulator to see live readings.
+            </p>
+          </div>
+
+        </div>
+
+        <p class="updated">
+          <i class="fa-regular fa-clock"></i>
+          <span id="updated">Waiting for sensor...</span>
+        </p>
+
+      </div>
+
+
+      <!-- NPK -->
+
+      <div class="panel npk-panel">
+
+        <div class="panel-header">
+
+          <div>
+            <span class="panel-label">SOIL NUTRIENTS</span>
+            <h3>NPK Analysis</h3>
+          </div>
+
+          <i class="fa-solid fa-leaf panel-symbol"></i>
+
+        </div>
+
+
+        <div class="npk-grid">
+
+          <div class="nutrient nitrogen">
+
+            <div class="nutrient-icon">
+              N
+            </div>
+
+            <div>
+              <span>Nitrogen</span>
+
+              <strong>
+                <span id="nitrogen">--</span>
+                <small>mg/kg</small>
+              </strong>
+            </div>
+
+          </div>
+
+
+          <div class="nutrient phosphorus">
+
+            <div class="nutrient-icon">
+              P
+            </div>
+
+            <div>
+              <span>Phosphorus</span>
+
+              <strong>
+                <span id="phosphorus">--</span>
+                <small>mg/kg</small>
+              </strong>
+            </div>
+
+          </div>
+
+
+          <div class="nutrient potassium">
+
+            <div class="nutrient-icon">
+              K
+            </div>
+
+            <div>
+              <span>Potassium</span>
+
+              <strong>
+                <span id="potassium">--</span>
+                <small>mg/kg</small>
+              </strong>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="fertility-status">
+
+          <div class="fertility-icon">
+            <i class="fa-solid fa-seedling"></i>
+          </div>
+
+          <div>
+            <strong id="fertilityTitle">
+              Waiting for analysis
+            </strong>
+
+            <p id="fertilityText">
+              Nutrient status will appear when readings are available.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================= CHARTS ================= -->
+
+    <section class="charts-grid">
+
+      <!-- Moisture Chart -->
+
+      <div class="panel chart-panel large-chart">
+
+        <div class="panel-header">
+
+          <div>
+            <span class="panel-label">REAL-TIME DATA</span>
+            <h3>Soil Moisture Trend</h3>
+          </div>
+
+          <span class="chart-live">
+            <span></span>
+            LIVE
+          </span>
+
+        </div>
+
+        <div class="chart-container">
+          <canvas id="chart"></canvas>
+        </div>
+
+      </div>
+
+
+      <!-- Environment Chart -->
+
+      <div class="panel chart-panel">
+
+        <div class="panel-header">
+
+          <div>
+            <span class="panel-label">ENVIRONMENT</span>
+            <h3>Temperature</h3>
+          </div>
+
+          <i class="fa-solid fa-temperature-half chart-icon"></i>
+
+        </div>
+
+        <div class="chart-container">
+          <canvas id="temperatureChart"></canvas>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================= SOIL HEALTH ================= -->
+
+    <section class="soil-health panel">
+
+      <div class="panel-header">
+
+        <div>
+          <span class="panel-label">SMART ANALYSIS</span>
+          <h3>Soil Health Indicators</h3>
+        </div>
+
+        <i class="fa-solid fa-chart-simple panel-symbol"></i>
+
+      </div>
+
+
+      <div class="health-grid">
+
+        <div class="health-item">
+
+          <div class="health-icon green">
+            <i class="fa-solid fa-droplet"></i>
+          </div>
+
+          <div class="health-content">
+            <span>Moisture</span>
+            <strong id="healthMoisture">--</strong>
+          </div>
+
+          <div class="health-bar">
+            <div id="healthMoistureBar"></div>
+          </div>
+
+        </div>
+
+
+        <div class="health-item">
+
+          <div class="health-icon orange">
+            <i class="fa-solid fa-temperature-half"></i>
+          </div>
+
+          <div class="health-content">
+            <span>Temperature</span>
+            <strong id="healthTemperature">--</strong>
+          </div>
+
+          <div class="health-bar">
+            <div id="healthTemperatureBar"></div>
+          </div>
+
+        </div>
+
+
+        <div class="health-item">
+
+          <div class="health-icon purple">
+            <i class="fa-solid fa-flask"></i>
+          </div>
+
+          <div class="health-content">
+            <span>pH Balance</span>
+            <strong id="healthPh">--</strong>
+          </div>
+
+          <div class="health-bar">
+            <div id="healthPhBar"></div>
+          </div>
+
+        </div>
+
+
+        <div class="health-item">
+
+          <div class="health-icon blue">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+
+          <div class="health-content">
+            <span>Nutrients / EC</span>
+            <strong id="healthEc">--</strong>
+          </div>
+
+          <div class="health-bar">
+            <div id="healthEcBar"></div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================= TABLE ================= -->
+
+    <section class="panel table-panel">
+
+      <div class="panel-header">
+
+        <div>
+          <span class="panel-label">SENSOR HISTORY</span>
+          <h3>Latest Readings</h3>
+        </div>
+
+        <div class="table-live">
+          <span></span>
+          Auto updating
+        </div>
+
+      </div>
+
+
+      <div class="scroll">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Time</th>
+              <th>Moisture</th>
+              <th>Temperature</th>
+              <th>pH</th>
+              <th>EC</th>
+              <th>N</th>
+              <th>P</th>
+              <th>K</th>
+              <th>Status</th>
+            </tr>
+
+          </thead>
+
+          <tbody id="rows"></tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+      <div>
+        <i class="fa-solid fa-seedling"></i>
+        <strong>Soil Monitor</strong>
+        Smart Agriculture System
+      </div>
+
+      <span>
+        Real-time monitoring dashboard
+      </span>
+
+    </footer>
+
+  </main>
+
+
+  <script src="app.js"></script>
+
+</body>
+
+</html>
